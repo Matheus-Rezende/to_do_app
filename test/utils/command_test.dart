@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:to_do_app/core/commands/commands.dart';
-import 'package:to_do_app/core/result/result.dart';
+import 'package:to_do_app/utils/commands/commands.dart';
+import 'package:to_do_app/utils/result/result.dart';
 
 void main() {
   group('Shoud test Commands', () {
@@ -76,21 +76,21 @@ void main() {
 }
 
 Future<Result<String>> getOkResult() async {
-  await Future.delayed(Duration(milliseconds: 500));
+  await Future.delayed(const Duration(milliseconds: 500));
   return Result.ok('The operation has success');
 }
 
 Future<Result<bool>> getErrorResult() async {
-  await Future.delayed(Duration(milliseconds: 500));
+  await Future.delayed(const Duration(milliseconds: 500));
   return Result.error(Exception('Ocorreu um erro ao gerar o estado!'));
 }
 
 Future<Result<String>> getOkResult1(String params) async {
-  await Future.delayed(Duration(milliseconds: 500));
+  await Future.delayed(const Duration(milliseconds: 500));
   return Result.ok('Retornou com sucesso usando parametros: $params');
 }
 
 Future<Result<bool>> getErrorResult1(String params) async {
-  await Future.delayed(Duration(milliseconds: 500));
+  await Future.delayed(const Duration(milliseconds: 500));
   return Result.error(Exception('Ocorreu um erro ao gerar o estado com parametros: $params'));
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/core/commands/commands.dart';
-import 'package:to_do_app/core/result/result.dart';
+import 'package:to_do_app/utils/commands/commands.dart';
+import 'package:to_do_app/utils/result/result.dart';
 import 'package:to_do_app/data/repositories/todos/todos_repository.dart';
 import 'package:to_do_app/domain/models/todo_model.dart';
 
@@ -23,15 +23,6 @@ class TodoViewmodel extends ChangeNotifier {
   List<TodoModel> get todos => _todos;
 
   Future<Result<List<TodoModel>>> _load() async {
-    // await Future.delayed(const Duration(seconds: 2));
-    // final List<TodoModel> todos = [];
-
-    // _todos = todos;
-
-    // notifyListeners();
-
-    // return Result.ok(todos);
-
     final result = await _todosRepository.get();
 
     switch (result) {
@@ -40,10 +31,9 @@ class TodoViewmodel extends ChangeNotifier {
         notifyListeners();
         break;
       case Error():
-        // Implement Logging
+        //TODO: Implement Logging
         break;
     }
-
     return result;
   }
 
@@ -60,17 +50,6 @@ class TodoViewmodel extends ChangeNotifier {
         break;
     }
     return result;
-    // await Future.delayed(const Duration(seconds: 2));
-
-    // final lastTodoIndex = _todos.length;
-
-    // final createdTodo = TodoModel(id: lastTodoIndex, name: name);
-
-    // _todos.add(createdTodo);
-
-    // notifyListeners();
-
-    // return Result.ok(createdTodo);
   }
 
   Future<Result<void>> _removeTodo(TodoModel todo) async {
@@ -85,14 +64,6 @@ class TodoViewmodel extends ChangeNotifier {
         //TODO: Implement logging
         break;
     }
-
     return result;
-
-    // await Future.delayed(const Duration(seconds: 1));
-
-    // _todos.remove(todo);
-
-    // notifyListeners();
-    // return Result.ok('Removido com sucesso!');
   }
 }

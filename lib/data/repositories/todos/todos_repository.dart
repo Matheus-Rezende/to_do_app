@@ -1,4 +1,4 @@
-import 'package:to_do_app/core/result/result.dart';
+import 'package:to_do_app/utils/result/result.dart';
 import 'package:to_do_app/domain/models/todo_model.dart';
 
 abstract class TodosRepository {
