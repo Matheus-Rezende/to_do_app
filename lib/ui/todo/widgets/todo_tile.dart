@@ -35,6 +35,7 @@ class _TodoTileState extends State<TodoTile> {
       );
     } else {
       Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
       if (widget.todoViewmodel.removeTodo.completed) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Tarefa excluida com sucesso!'), backgroundColor: Colors.green),
