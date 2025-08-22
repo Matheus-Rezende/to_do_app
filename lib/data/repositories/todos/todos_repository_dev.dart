@@ -6,9 +6,11 @@ class TodosRepositoryDev implements TodosRepository {
   final List<TodoModel> _todos = [];
   @override
   Future<Result<TodoModel>> add({required String name}) async {
-    final lastTodoIndex = _todos.length;
+    //final lastTodoIndex = _todos.length;
 
-    final TodoModel createdTodo = TodoModel(id: lastTodoIndex + 1, name: name);
+    //final TodoModel createdTodo = TodoModel(id: (lastTodoIndex).toString(), name: name);
+
+    final TodoModel createdTodo = TodoModel(name: name);
 
     return Result.ok(createdTodo);
   }
