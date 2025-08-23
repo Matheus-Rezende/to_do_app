@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:to_do_app/data/services/api/models/todo/todo_api_model.dart';
 import 'package:to_do_app/domain/models/todo_model.dart';
 import 'package:to_do_app/utils/result/result.dart';
 
@@ -40,13 +41,39 @@ class ApiClient {
     }
   }
 
-  Future<Result<TodoModel>> postTodo(TodoModel todo) async {
+  Future<Result<TodoModel>> postTodo(CreateApiTodoModel todo) async {
     final client = _clientHttpFactory();
 
     try {
       final request = await client.post(_host, _port, '/todos');
 
-      request.write(jsonEncode({'name': todo.name}));
+      request.write(jsonEncode(todo.toJson()));
+
+      final response = await request.close();
+
+      if (response.statusCode == 201) {
+        final stringData = await response.transform(utf8.decoder).join();
+        final json = jsonDecode(stringData);
+        final createdTodo = TodoModel.fromJson(json);
+
+        return Result.ok(createdTodo);
+      } else {
+        return Result.error(const HttpException('Invalid response'));
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<Result<TodoModel>> updateTodo(UpdateApiTodoModel todo) async {
+    final client = _clientHttpFactory();
+
+    try {
+      final request = await client.put(_host, _port, '/todos/${todo.id}');
+
+      request.write(jsonEncode(todo.toJson()));
 
       final response = await request.close();
 
