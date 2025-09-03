@@ -10,10 +10,11 @@ class TodosRepositoryRemote extends ChangeNotifier implements TodosRepository {
   final ApiClient _apiClient;
 
   @override
-  // TODO: implement todos
   List<TodoModel> get todos => _todos;
 
   List<TodoModel> _todos = [];
+
+  final Map<String, TodoModel> _cachedTodos = {};
 
   @override
   Future<Result<TodoModel>> add({
@@ -28,6 +29,7 @@ class TodosRepositoryRemote extends ChangeNotifier implements TodosRepository {
 
       switch (result) {
         case Ok<TodoModel>():
+          _cachedTodos[result.value.id] = result.value;
           return Result.ok(result.value);
         default:
           return result;
@@ -46,6 +48,7 @@ class TodosRepositoryRemote extends ChangeNotifier implements TodosRepository {
 
       switch (result) {
         case Ok<void>():
+          _cachedTodos.remove(todo.id);
           return Result.ok(null);
         default:
           return result;
@@ -78,11 +81,15 @@ class TodosRepositoryRemote extends ChangeNotifier implements TodosRepository {
 
   @override
   Future<Result<TodoModel>> getTodoById({required String id}) async {
+    if (_cachedTodos[id] != null) {
+      return Result.ok(_cachedTodos[id]!);
+    }
     try {
       final result = await _apiClient.getTodoById(id);
 
       switch (result) {
         case Ok<TodoModel>():
+          _cachedTodos[id] = result.value;
           return Result.ok(result.value);
         default:
           return result;
@@ -105,6 +112,7 @@ class TodosRepositoryRemote extends ChangeNotifier implements TodosRepository {
         case Ok<TodoModel>():
           final todoIndex = _todos.indexWhere((e) => e.id == todo.id);
           _todos[todoIndex] = result.value;
+          _cachedTodos[todo.id] = result.value;
           return Result.ok(result.value);
         default:
           return result;
