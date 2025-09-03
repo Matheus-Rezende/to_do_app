@@ -5,10 +5,19 @@ import 'package:to_do_app/domain/models/todo_model.dart';
 class TodosRepositoryDev implements TodosRepository {
   final List<TodoModel> _todos = [];
   @override
-  Future<Result<TodoModel>> add({required String name}) async {
+  Future<Result<TodoModel>> add({
+    required String name,
+    required String description,
+    required bool done,
+  }) async {
     final lastTodoIndex = _todos.length;
 
-    final TodoModel createdTodo = TodoModel(id: (lastTodoIndex).toString(), name: name);
+    final TodoModel createdTodo = TodoModel(
+      id: (lastTodoIndex).toString(),
+      name: name,
+      description: description,
+      done: done,
+    );
 
     return Result.ok(createdTodo);
   }
@@ -25,5 +34,19 @@ class TodosRepositoryDev implements TodosRepository {
   @override
   Future<Result<List<TodoModel>>> get() async {
     return Result.ok(_todos);
+  }
+
+  @override
+  Future<Result<TodoModel>> getTodoById({required String id}) async {
+    return Result.ok(_todos.where((e) => e.id == id).first);
+  }
+
+  @override
+  Future<Result<TodoModel>> update({required TodoModel todo}) async {
+    final todoIndex = _todos.indexWhere((e) => e.id == todo.id);
+
+    _todos[todoIndex] = todo;
+
+    return Result.ok(todo);
   }
 }

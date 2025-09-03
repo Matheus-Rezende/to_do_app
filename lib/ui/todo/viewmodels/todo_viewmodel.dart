@@ -9,14 +9,17 @@ class TodoViewmodel extends ChangeNotifier {
     load = Command0(_load)..execute();
     addTodo = Command1(_addTodo);
     removeTodo = Command1(_removeTodo);
+    updateTodo = Command1(_updateTodo);
   }
 
   final TodosRepository _todosRepository;
   late Command0 load;
 
-  late Command1<TodoModel, String> addTodo;
+  late Command1<TodoModel, (String, String, bool)> addTodo;
 
   late Command1<void, TodoModel> removeTodo;
+
+  late Command1<TodoModel, TodoModel> updateTodo;
 
   List<TodoModel> _todos = [];
 
@@ -37,8 +40,9 @@ class TodoViewmodel extends ChangeNotifier {
     return result;
   }
 
-  Future<Result<TodoModel>> _addTodo(String name) async {
-    final result = await _todosRepository.add(name: name);
+  Future<Result<TodoModel>> _addTodo((String, String, bool) todo) async {
+    final (name, description, done) = todo;
+    final result = await _todosRepository.add(name: name, description: description, done: done);
 
     switch (result) {
       case Ok<TodoModel>():
@@ -65,5 +69,19 @@ class TodoViewmodel extends ChangeNotifier {
         break;
     }
     return result;
+  }
+
+  Future<Result<TodoModel>> _updateTodo(TodoModel todo) async {
+    final result = await _todosRepository.update(todo: todo);
+
+    switch (result) {
+      case Ok<TodoModel>():
+        final todoIndex = _todos.indexWhere((e) => e.id == todo.id);
+        _todos[todoIndex] = todo;
+        notifyListeners();
+        return Result.ok(result.value);
+      default:
+        return result;
+    }
   }
 }

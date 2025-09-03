@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/ui/todo/viewmodels/todo_viewmodel.dart';
+import 'package:to_do_app/ui/todo_details/widgets/todo_dialog_content_widget.dart';
 
 class AddTodoWidget extends StatefulWidget {
   final TodoViewmodel todoViewmodel;
@@ -12,6 +13,7 @@ class AddTodoWidget extends StatefulWidget {
 class _AddTodoWidgetState extends State<AddTodoWidget> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController nameController = TextEditingController();
+  late final TextEditingController descriptionController = TextEditingController();
 
   @override
   void initState() {
@@ -48,41 +50,12 @@ class _AddTodoWidgetState extends State<AddTodoWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      content: IntrinsicHeight(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: 16.0,
-            children: [
-              const Row(children: [Text('Adicione novos TODO')]),
-              TextFormField(
-                decoration: const InputDecoration(
-                  hintText: 'Nome tarefa',
-                  hintStyle: TextStyle(fontSize: 16.0),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty || value.trim().isEmpty) {
-                    return 'Por favor, preencha nome';
-                  }
-                  return null;
-                },
-                controller: nameController,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState?.validate() == true) {
-                    widget.todoViewmodel.addTodo.execute(nameController.text);
-                  }
-                },
-                child: const Text('Salvar tarefa'),
-              ),
-            ],
-          ),
-        ),
-      ),
+    return TodoDialogContentWidget(
+      formKey: _formKey,
+      nameController: nameController,
+      descriptionController: descriptionController,
+      todoTitle: 'Criar tarefa',
+      todoViewmodel: widget.todoViewmodel,
     );
   }
 
@@ -90,6 +63,7 @@ class _AddTodoWidgetState extends State<AddTodoWidget> {
   void dispose() {
     super.dispose();
     nameController.dispose();
+    descriptionController.dispose();
     widget.todoViewmodel.addTodo.removeListener(_onResult);
   }
 }

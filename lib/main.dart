@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/data/repositories/todos/todos_repository_remote.dart';
-import 'package:to_do_app/data/services/api/api_client.dart';
-import 'package:to_do_app/ui/todo/viewmodels/todo_viewmodel.dart';
-import 'package:to_do_app/ui/todo/widgets/todo_screen.dart';
+import 'package:to_do_app/routing/router.dart';
 
 void main() {
   runApp(const MainApp());
@@ -13,13 +10,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      darkTheme: ThemeData.dark(),
-      home: TodoScreen(
-        todoViewmodel: TodoViewmodel(
-          todosRepository: TodosRepositoryRemote(apiClient: ApiClient(host: '192.168.3.22')),
-        ),
-      ),
-    );
+    return MaterialApp.router(darkTheme: ThemeData.dark(), routerConfig: routerConfig());
   }
 }
