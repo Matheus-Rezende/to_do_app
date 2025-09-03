@@ -13,6 +13,9 @@ class TodoDetailsViewmodel extends ChangeNotifier {
        _todoUpdateUseCase = todoUpdateUsecase {
     load = Command1(_load);
     updateTodo = Command1(_todoUpdateUseCase.updateTodo);
+    _todosRepository.addListener(() {
+      load.execute(_todo.id);
+    });
   }
 
   final TodosRepository _todosRepository;
@@ -27,8 +30,6 @@ class TodoDetailsViewmodel extends ChangeNotifier {
   Future<Result<TodoModel>> _load(String id) async {
     try {
       final result = await _todosRepository.getTodoById(id: id);
-      await Future.delayed(const Duration(seconds: 1));
-
       switch (result) {
         case Ok<TodoModel>():
           _todo = result.value;

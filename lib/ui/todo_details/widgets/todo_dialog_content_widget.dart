@@ -73,7 +73,14 @@ class TodoDialogContentWidget extends StatelessWidget {
                         false,
                       ));
                     }
-                    if (todoDetailsViewmodel != null) {}
+                    if (todoDetailsViewmodel != null) {
+                      todoDetailsViewmodel!.updateTodo.execute(
+                        todoDetailsViewmodel!.todo.copyWith(
+                          name: nameController.text,
+                          description: descriptionController.text,
+                        ),
+                      );
+                    }
                   }
                 },
                 child: const Text('Salvar tarefa'),

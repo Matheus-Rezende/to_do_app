@@ -1,12 +1,19 @@
+import 'package:flutter/material.dart';
 import 'package:to_do_app/data/repositories/todos/todos_repository.dart';
 import 'package:to_do_app/data/services/api/api_client.dart';
 import 'package:to_do_app/data/services/api/models/todo/todo_api_model.dart';
 import 'package:to_do_app/domain/models/todo_model.dart';
 import 'package:to_do_app/utils/result/result.dart';
 
-class TodosRepositoryRemote implements TodosRepository {
-  const TodosRepositoryRemote({required ApiClient apiClient}) : _apiClient = apiClient;
+class TodosRepositoryRemote extends ChangeNotifier implements TodosRepository {
+  TodosRepositoryRemote({required ApiClient apiClient}) : _apiClient = apiClient;
   final ApiClient _apiClient;
+
+  @override
+  // TODO: implement todos
+  List<TodoModel> get todos => _todos;
+
+  List<TodoModel> _todos = [];
 
   @override
   Future<Result<TodoModel>> add({
@@ -27,6 +34,8 @@ class TodosRepositoryRemote implements TodosRepository {
       }
     } on Exception catch (error) {
       return Result.error(error);
+    } finally {
+      notifyListeners();
     }
   }
 
@@ -43,6 +52,8 @@ class TodosRepositoryRemote implements TodosRepository {
       }
     } on Exception catch (error) {
       return Result.error(error);
+    } finally {
+      notifyListeners();
     }
   }
 
@@ -53,12 +64,15 @@ class TodosRepositoryRemote implements TodosRepository {
 
       switch (result) {
         case Ok<List<TodoModel>>():
+          _todos = result.value;
           return Result.ok(result.value);
         default:
           return result;
       }
     } on Exception catch (error) {
       return Result.error(error);
+    } finally {
+      notifyListeners();
     }
   }
 
@@ -75,6 +89,8 @@ class TodosRepositoryRemote implements TodosRepository {
       }
     } on Exception catch (error) {
       return Result.error(error);
+    } finally {
+      notifyListeners();
     }
   }
 
@@ -87,12 +103,16 @@ class TodosRepositoryRemote implements TodosRepository {
 
       switch (result) {
         case Ok<TodoModel>():
+          final todoIndex = _todos.indexWhere((e) => e.id == todo.id);
+          _todos[todoIndex] = result.value;
           return Result.ok(result.value);
         default:
           return result;
       }
     } on Exception catch (error) {
       return Result.error(error);
+    } finally {
+      notifyListeners();
     }
   }
 }

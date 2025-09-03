@@ -18,6 +18,40 @@ class _EditTodoWidgetState extends State<EditTodoWidget> {
   late final TextEditingController descriptionController = TextEditingController(
     text: widget.todoDetailsViewmodel.todo.description,
   );
+
+  @override
+  void initState() {
+    widget.todoDetailsViewmodel.updateTodo.addListener(_onUpdateTodo);
+    super.initState();
+  }
+
+  void _onUpdateTodo() {
+    final command = widget.todoDetailsViewmodel.updateTodo;
+    if (command.running) {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => const AlertDialog(
+          content: IntrinsicHeight(child: Center(child: CircularProgressIndicator())),
+        ),
+      );
+    } else {
+      Navigator.pop(context);
+      if (command.completed) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Tarefa editada com sucesso!'), backgroundColor: Colors.green),
+        );
+      }
+      if (command.error) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Erro ao editar a tarefa!'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return TodoDialogContentWidget(
@@ -33,6 +67,7 @@ class _EditTodoWidgetState extends State<EditTodoWidget> {
   void dispose() {
     nameController.dispose();
     descriptionController.dispose();
+    widget.todoDetailsViewmodel.updateTodo.removeListener(_onUpdateTodo);
     super.dispose();
   }
 }

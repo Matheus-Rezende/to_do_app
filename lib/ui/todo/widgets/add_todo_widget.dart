@@ -22,7 +22,8 @@ class _AddTodoWidgetState extends State<AddTodoWidget> {
   }
 
   void _onResult() {
-    if (widget.todoViewmodel.addTodo.running) {
+    final command = widget.todoViewmodel.addTodo;
+    if (command.running) {
       showDialog(
         barrierDismissible: false,
         context: context,
@@ -31,15 +32,14 @@ class _AddTodoWidgetState extends State<AddTodoWidget> {
         ),
       );
     } else {
-      if (widget.todoViewmodel.addTodo.completed) {
-        Navigator.pop(context);
+      Navigator.pop(context);
+      if (command.completed) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Nova tarefa adicionada com sucesso!'), backgroundColor: Colors.green),
         );
       }
-      if (widget.todoViewmodel.addTodo.error) {
-        Navigator.pop(context);
+      if (command.error) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Erro ao adicionar uma nova tarefa!'), backgroundColor: Colors.red),

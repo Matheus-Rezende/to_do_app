@@ -13,6 +13,10 @@ class TodoViewmodel extends ChangeNotifier {
     addTodo = Command1(_addTodo);
     removeTodo = Command1(_removeTodo);
     updateTodo = Command1(_todoUpdateUseCase.updateTodo);
+    _todosRepository.addListener(() {
+      _todos = _todosRepository.todos;
+      notifyListeners();
+    });
   }
 
   final TodosRepository _todosRepository;

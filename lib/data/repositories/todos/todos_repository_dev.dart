@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:to_do_app/utils/result/result.dart';
 import 'package:to_do_app/data/repositories/todos/todos_repository.dart';
 import 'package:to_do_app/domain/models/todo_model.dart';
 
-class TodosRepositoryDev implements TodosRepository {
+class TodosRepositoryDev extends ChangeNotifier implements TodosRepository {
   final List<TodoModel> _todos = [];
   @override
   Future<Result<TodoModel>> add({
@@ -49,4 +50,8 @@ class TodosRepositoryDev implements TodosRepository {
 
     return Result.ok(todo);
   }
+
+  @override
+  // TODO: implement todos
+  List<TodoModel> get todos => throw UnimplementedError();
 }

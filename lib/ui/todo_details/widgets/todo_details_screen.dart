@@ -18,7 +18,12 @@ class TodoDetailsScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (todoDetailsViewmodel.load.error) {
-            return const Center(child: Text('Ocorreu um erro ao carregar os detalhes do Todo'));
+            return const Column(
+              children: [
+                TodoAppbarWidget(title: 'Error'),
+                Center(child: Text('Ocorreu um erro ao carregar os detalhes do Todo')),
+              ],
+            );
           }
 
           return child!;
