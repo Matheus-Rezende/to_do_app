@@ -4,5 +4,5 @@ import 'package:to_do_app/config/dependencies.dart';
 import 'package:to_do_app/main.dart';
 
 void main() {
-  runApp(MultiProvider(providers: providersLocal, child: const MainApp()));
+  runApp(MultiProvider(providers: providersRemote, child: const MainApp()));
 }

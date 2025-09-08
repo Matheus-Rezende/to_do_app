@@ -5,22 +5,32 @@ import 'package:to_do_app/domain/models/todo_model.dart';
 
 class TodosRepositoryDev extends ChangeNotifier implements TodosRepository {
   final List<TodoModel> _todos = [];
+
+  @override
+  List<TodoModel> get todos => _todos;
+
   @override
   Future<Result<TodoModel>> add({
     required String name,
     required String description,
     required bool done,
   }) async {
-    final lastTodoIndex = _todos.length;
+    try {
+      final lastTodoIndex = _todos.length;
 
-    final TodoModel createdTodo = TodoModel(
-      id: (lastTodoIndex).toString(),
-      name: name,
-      description: description,
-      done: done,
-    );
+      final TodoModel createdTodo = TodoModel(
+        id: (lastTodoIndex).toString(),
+        name: name,
+        description: description,
+        done: done,
+      );
 
-    return Result.ok(createdTodo);
+      return Result.ok(createdTodo);
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      notifyListeners();
+    }
   }
 
   @override
@@ -44,14 +54,16 @@ class TodosRepositoryDev extends ChangeNotifier implements TodosRepository {
 
   @override
   Future<Result<TodoModel>> update({required TodoModel todo}) async {
-    final todoIndex = _todos.indexWhere((e) => e.id == todo.id);
+    try {
+      final todoIndex = _todos.indexWhere((e) => e.id == todo.id);
 
-    _todos[todoIndex] = todo;
+      _todos[todoIndex] = todo;
 
-    return Result.ok(todo);
+      return Result.ok(todo);
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      notifyListeners();
+    }
   }
-
-  @override
-  // TODO: implement todos
-  List<TodoModel> get todos => throw UnimplementedError();
 }
