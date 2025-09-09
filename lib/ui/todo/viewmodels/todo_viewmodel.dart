@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:to_do_app/domain/use_cases/todo_update_use_case.dart';
 import 'package:to_do_app/utils/commands/commands.dart';
 import 'package:to_do_app/utils/result/result.dart';
@@ -30,31 +31,24 @@ class TodoViewmodel extends ChangeNotifier {
   List<TodoModel> _todos = [];
   List<TodoModel> get todos => _todos;
 
+  final _log = Logger('TodoViewModel');
+
   Future<Result<List<TodoModel>>> _load() async {
-    // final result = await _todosRepository.get();
-
-    // switch (result) {
-    //   case Ok<List<TodoModel>>():
-    //     _todos = result.value;
-    //     notifyListeners();
-    //     break;
-    //   case Error():
-    //     //TODO: Implement Logging
-    //     break;
-    // }
-    // return result;
-
     try {
       final result = await _todosRepository.get();
 
       switch (result) {
         case Ok<List<TodoModel>>():
           _todos = result.value;
-          return Result.ok(result.value);
-        default:
-          return result;
+          _log.fine('Todos carregados');
+          break;
+        case Error():
+          _log.warning('Falha ao carregar todos: ', result.exception);
+          break;
       }
-    } on Exception catch (error) {
+      return result;
+    } on Exception catch (error, stacktrace) {
+      _log.warning('Falha ao carregar todos: ', error, stacktrace);
       return Result.error(error);
     } finally {
       notifyListeners();
@@ -62,19 +56,6 @@ class TodoViewmodel extends ChangeNotifier {
   }
 
   Future<Result<TodoModel>> _addTodo((String, String, bool) todo) async {
-    // final (name, description, done) = todo;
-    // final result = await _todosRepository.add(name: name, description: description, done: done);
-
-    // switch (result) {
-    //   case Ok<TodoModel>():
-    //     _todos.add(result.value);
-    //     notifyListeners();
-    //     break;
-    //   case Error():
-    //     // TODO: Implement logging
-    //     break;
-    // }
-    // return result;
     try {
       final (name, description, done) = todo;
       final result = await _todosRepository.add(name: name, description: description, done: done);
@@ -82,11 +63,15 @@ class TodoViewmodel extends ChangeNotifier {
       switch (result) {
         case Ok<TodoModel>():
           _todos.add(result.value);
-          return Result.ok(result.value);
-        default:
-          return result;
+          _log.fine('Todo adicionado com sucesso!');
+          break;
+        case Error():
+          _log.warning('Falha ao adicionador o todo: ', result.exception);
+          break;
       }
-    } on Exception catch (error) {
+      return result;
+    } on Exception catch (error, stacktrace) {
+      _log.warning('Falha ao adicionador o todo: ', error, stacktrace);
       return Result.error(error);
     } finally {
       notifyListeners();
@@ -94,29 +79,21 @@ class TodoViewmodel extends ChangeNotifier {
   }
 
   Future<Result<void>> _removeTodo(TodoModel todo) async {
-    // final result = await _todosRepository.delete(todo: todo);
-
-    // switch (result) {
-    //   case Ok<void>():
-    //     _todos.remove(todo);
-    //     notifyListeners();
-    //     break;
-    //   case Error():
-    //     //TODO: Implement logging
-    //     break;
-    // }
-    // return result;
     try {
       final result = await _todosRepository.delete(todo: todo);
 
       switch (result) {
         case Ok<void>():
           _todos.remove(todo);
-          return Result.ok(null);
-        default:
-          return result;
+          _log.fine('Todo removido com sucesso!');
+          break;
+        case Error():
+          _log.warning('Falha ao remover o todo: ', result.exception);
+          break;
       }
-    } on Exception catch (error) {
+      return result;
+    } on Exception catch (error, stacktrace) {
+      _log.warning('Falha ao remover o todo: ', error, stacktrace);
       return Result.error(error);
     } finally {
       notifyListeners();

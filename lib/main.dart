@@ -3,7 +3,7 @@ import 'package:to_do_app/routing/router.dart';
 import 'main_staging.dart' as staging;
 import 'main_development.dart' as develop;
 
-void main() => develop.main();
+void main() => staging.main();
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
