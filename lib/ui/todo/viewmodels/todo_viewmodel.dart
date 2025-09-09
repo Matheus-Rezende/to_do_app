@@ -31,48 +31,95 @@ class TodoViewmodel extends ChangeNotifier {
   List<TodoModel> get todos => _todos;
 
   Future<Result<List<TodoModel>>> _load() async {
-    final result = await _todosRepository.get();
+    // final result = await _todosRepository.get();
 
-    switch (result) {
-      case Ok<List<TodoModel>>():
-        _todos = result.value;
-        notifyListeners();
-        break;
-      case Error():
-        //TODO: Implement Logging
-        break;
+    // switch (result) {
+    //   case Ok<List<TodoModel>>():
+    //     _todos = result.value;
+    //     notifyListeners();
+    //     break;
+    //   case Error():
+    //     //TODO: Implement Logging
+    //     break;
+    // }
+    // return result;
+
+    try {
+      final result = await _todosRepository.get();
+
+      switch (result) {
+        case Ok<List<TodoModel>>():
+          _todos = result.value;
+          return Result.ok(result.value);
+        default:
+          return result;
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      notifyListeners();
     }
-    return result;
   }
 
   Future<Result<TodoModel>> _addTodo((String, String, bool) todo) async {
-    final (name, description, done) = todo;
-    final result = await _todosRepository.add(name: name, description: description, done: done);
+    // final (name, description, done) = todo;
+    // final result = await _todosRepository.add(name: name, description: description, done: done);
 
-    switch (result) {
-      case Ok<TodoModel>():
-        _todos.add(result.value);
-        notifyListeners();
-        break;
-      case Error():
-        // TODO: Implement logging
-        break;
+    // switch (result) {
+    //   case Ok<TodoModel>():
+    //     _todos.add(result.value);
+    //     notifyListeners();
+    //     break;
+    //   case Error():
+    //     // TODO: Implement logging
+    //     break;
+    // }
+    // return result;
+    try {
+      final (name, description, done) = todo;
+      final result = await _todosRepository.add(name: name, description: description, done: done);
+
+      switch (result) {
+        case Ok<TodoModel>():
+          _todos.add(result.value);
+          return Result.ok(result.value);
+        default:
+          return result;
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      notifyListeners();
     }
-    return result;
   }
 
   Future<Result<void>> _removeTodo(TodoModel todo) async {
-    final result = await _todosRepository.delete(todo: todo);
+    // final result = await _todosRepository.delete(todo: todo);
 
-    switch (result) {
-      case Ok<void>():
-        _todos.remove(todo);
-        notifyListeners();
-        break;
-      case Error():
-        //TODO: Implement logging
-        break;
+    // switch (result) {
+    //   case Ok<void>():
+    //     _todos.remove(todo);
+    //     notifyListeners();
+    //     break;
+    //   case Error():
+    //     //TODO: Implement logging
+    //     break;
+    // }
+    // return result;
+    try {
+      final result = await _todosRepository.delete(todo: todo);
+
+      switch (result) {
+        case Ok<void>():
+          _todos.remove(todo);
+          return Result.ok(null);
+        default:
+          return result;
+      }
+    } on Exception catch (error) {
+      return Result.error(error);
+    } finally {
+      notifyListeners();
     }
-    return result;
   }
 }
