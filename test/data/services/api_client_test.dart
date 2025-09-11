@@ -17,13 +17,21 @@ void main() {
     });
 
     test('Should return Result Ok when creating postTodo()', () async {
-      const CreateApiTodoModel todoCreated = CreateApiTodoModel(name: 'Teste');
+      const CreateApiTodoModel todoCreated = CreateApiTodoModel(
+        name: 'Teste',
+        description: 'Test description',
+        done: false,
+      );
       final result = await apiClient.postTodo(todoCreated);
       expect(result.asOk.value, isA<TodoModel>());
     });
 
     test('Should delete when deleteTodo()', () async {
-      const CreateApiTodoModel todoCreated = CreateApiTodoModel(name: 'Teste');
+      const CreateApiTodoModel todoCreated = CreateApiTodoModel(
+        name: 'Teste',
+        description: 'Test description',
+        done: false,
+      );
 
       final createdTodoResult = await apiClient.postTodo(todoCreated);
 
@@ -33,7 +41,11 @@ void main() {
     });
 
     test('Should update when updateTodo()', () async {
-      const CreateApiTodoModel todoCreated = CreateApiTodoModel(name: 'Teste');
+      const CreateApiTodoModel todoCreated = CreateApiTodoModel(
+        name: 'Teste',
+        description: 'Test description',
+        done: false,
+      );
 
       final createdTodoResult = await apiClient.postTodo(todoCreated);
 
@@ -41,14 +53,21 @@ void main() {
         UpdateApiTodoModel(
           id: createdTodoResult.asOk.value.id,
           name: '${createdTodoResult.asOk.value.name} updatedDate ${DateTime.now().toIso8601String()}',
+          description: createdTodoResult.asOk.value.description,
+          done: true,
         ),
       );
 
       expect(result, isA<Result<TodoModel>>());
+      expect(result.asOk.value.done, true);
     });
 
     test('Should get todo by ID', () async {
-      const CreateApiTodoModel todoCreated = CreateApiTodoModel(name: 'Teste');
+      const CreateApiTodoModel todoCreated = CreateApiTodoModel(
+        name: 'Teste',
+        description: 'Test description',
+        done: false,
+      );
 
       final createdTodoResult = await apiClient.postTodo(todoCreated);
 

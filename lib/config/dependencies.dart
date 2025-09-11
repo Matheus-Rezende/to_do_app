@@ -24,5 +24,5 @@ List<SingleChildWidget> get providersLocal {
 }
 
 List<SingleChildWidget> get _sharedProviders {
-  return [Provider(create: (context) => TodoUpdateUseCase(todoRepository: context.read()))];
+  return [Provider(create: (context) => TodoUpdateUseCase(todosRepository: context.read()))];
 }
