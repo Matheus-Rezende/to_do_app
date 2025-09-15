@@ -4,16 +4,36 @@ import 'package:to_do_app/data/services/api/models/todo/todo_api_model.dart';
 import 'package:to_do_app/domain/models/todo_model.dart';
 import 'package:to_do_app/utils/result/result.dart';
 
+import '../../mock/http_client_mock.dart';
+import '../../mock/todos.dart';
+
 void main() {
   late ApiClient apiClient;
+  late MockHttpClient mockHttpClient;
 
   setUp(() {
-    apiClient = ApiClient();
+    mockHttpClient = MockHttpClient();
+    apiClient = ApiClient(clientHttpFactory: () => mockHttpClient);
   });
   group('Should test [ApiClient]', () {
     test('Should return Result Ok when getTodos()', () async {
+      // Arrange
+      mockHttpClient.mockGet(path: '/todos', object: mockGetTodos);
+      // Act
       final result = await apiClient.getTodos();
+      // Assert
       expect(result.asOk.value, isA<List<TodoModel>>());
+    });
+    test('Should getTodoById()', () async {
+      // Arrange
+      mockHttpClient.mockGet(path: '/todos/1', object: mockGetById);
+
+      // Act
+      final result = await apiClient.getTodoById('1');
+
+      // Assert
+      final todo = result.asOk.value;
+      expect(todo.id, '1');
     });
 
     test('Should return Result Ok when creating postTodo()', () async {
@@ -52,7 +72,8 @@ void main() {
       final result = await apiClient.updateTodo(
         UpdateApiTodoModel(
           id: createdTodoResult.asOk.value.id,
-          name: '${createdTodoResult.asOk.value.name} updatedDate ${DateTime.now().toIso8601String()}',
+          name:
+              '${createdTodoResult.asOk.value.name} updatedDate ${DateTime.now().toIso8601String()}',
           description: createdTodoResult.asOk.value.description,
           done: true,
         ),
@@ -60,26 +81,6 @@ void main() {
 
       expect(result, isA<Result<TodoModel>>());
       expect(result.asOk.value.done, true);
-    });
-
-    test('Should get todo by ID', () async {
-      const CreateApiTodoModel todoCreated = CreateApiTodoModel(
-        name: 'Teste',
-        description: 'Test description',
-        done: false,
-      );
-
-      final createdTodoResult = await apiClient.postTodo(todoCreated);
-
-      final result = await apiClient.getTodoById(createdTodoResult.asOk.value.id);
-
-      expect(result, isA<Result<TodoModel>>());
-
-      expect(result.asOk.value.id, createdTodoResult.asOk.value.id);
-
-      print('Todo Gravado: ${createdTodoResult.asOk.value.toJson()}');
-
-      print('Todo recuperado por id: ${result.asOk.value.toJson()}');
     });
   });
 }
