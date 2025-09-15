@@ -44,3 +44,10 @@ final updateTodoMockResponse = TodoModel(
   description: 'Descrição alterada',
   done: true,
 );
+
+final useCaseUpdateTodoMock = TodoModel(
+  id: '1',
+  name: 'Nome alterado',
+  description: 'Descrição alterado',
+  done: true,
+);
