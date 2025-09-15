@@ -30,6 +30,7 @@ class TodosRepositoryRemote extends ChangeNotifier implements TodosRepository {
       switch (result) {
         case Ok<TodoModel>():
           _cachedTodos[result.value.id] = result.value;
+          _todos.add(result.value);
           return Result.ok(result.value);
         default:
           return result;
@@ -49,6 +50,7 @@ class TodosRepositoryRemote extends ChangeNotifier implements TodosRepository {
       switch (result) {
         case Ok<void>():
           _cachedTodos.remove(todo.id);
+          _todos.remove(todo);
           return Result.ok(null);
         default:
           return result;
@@ -105,7 +107,12 @@ class TodosRepositoryRemote extends ChangeNotifier implements TodosRepository {
   Future<Result<TodoModel>> update({required TodoModel todo}) async {
     try {
       final result = await _apiClient.updateTodo(
-        UpdateApiTodoModel(id: todo.id, name: todo.name, description: todo.description, done: todo.done),
+        UpdateApiTodoModel(
+          id: todo.id,
+          name: todo.name,
+          description: todo.description,
+          done: todo.done,
+        ),
       );
 
       switch (result) {
