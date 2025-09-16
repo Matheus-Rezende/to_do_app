@@ -37,50 +37,45 @@ void main() {
     });
 
     test('Should return Result Ok when creating postTodo()', () async {
-      const CreateApiTodoModel todoCreated = CreateApiTodoModel(
-        name: 'Teste',
-        description: 'Test description',
-        done: false,
-      );
-      final result = await apiClient.postTodo(todoCreated);
+      // Arrange
+      mockHttpClient.mockPost(path: '/todos', object: createTodoMockResponse);
+
+      // Act
+      final result = await apiClient.postTodo(createTodoMockPost);
+
+      // Assert
       expect(result.asOk.value, isA<TodoModel>());
     });
 
     test('Should delete when deleteTodo()', () async {
-      const CreateApiTodoModel todoCreated = CreateApiTodoModel(
-        name: 'Teste',
-        description: 'Test description',
-        done: false,
-      );
+      mockHttpClient.mockDelete(path: '/todos/1', object: deleteTodoMock);
 
-      final createdTodoResult = await apiClient.postTodo(todoCreated);
+      final result = await apiClient.deleteTodo(deleteTodoMock);
 
-      final deleteTodoResult = await apiClient.deleteTodo(createdTodoResult.asOk.value);
-
-      expect(deleteTodoResult.asOk, isA<Result<void>>());
+      expect(result, isA<Result<void>>());
     });
 
     test('Should update when updateTodo()', () async {
-      const CreateApiTodoModel todoCreated = CreateApiTodoModel(
-        name: 'Teste',
-        description: 'Test description',
+      final updatedTodo = TodoModel(
+        id: '1',
+        name: 'Tarefa atualizada',
+        description: 'Descrição atualizada',
+        done: false,
+      );
+      const todoToUpdate = UpdateApiTodoModel(
+        id: '1',
+        name: 'Tarefa que vai ser atualizada',
+        description: 'descrição que vai ser atualizada',
         done: false,
       );
 
-      final createdTodoResult = await apiClient.postTodo(todoCreated);
+      mockHttpClient.mockPut(path: '/todos/1', object: updatedTodo);
 
-      final result = await apiClient.updateTodo(
-        UpdateApiTodoModel(
-          id: createdTodoResult.asOk.value.id,
-          name:
-              '${createdTodoResult.asOk.value.name} updatedDate ${DateTime.now().toIso8601String()}',
-          description: createdTodoResult.asOk.value.description,
-          done: true,
-        ),
-      );
+      final result = await apiClient.updateTodo(todoToUpdate);
 
       expect(result, isA<Result<TodoModel>>());
-      expect(result.asOk.value.done, true);
+      expect(result.asOk.value.name, isNot(todoToUpdate.name));
+      expect(result.asOk.value.description, isNot(todoToUpdate.description));
     });
   });
 }

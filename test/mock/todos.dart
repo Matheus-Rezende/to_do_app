@@ -51,3 +51,23 @@ final useCaseUpdateTodoMock = TodoModel(
   description: 'Descrição alterado',
   done: true,
 );
+
+const createTodoMockPost = CreateApiTodoModel(
+  name: 'Tarefa Criada',
+  description: 'Descrição Tarefa Criada',
+  done: false,
+);
+
+final createTodoMockResponse = TodoModel(
+  id: '1',
+  name: 'Tarefa Criada',
+  description: 'Descrição Tarefa Criada',
+  done: false,
+);
+
+final deleteTodoMock = TodoModel(
+  id: '1',
+  name: 'Tarefa para ser excluída',
+  description: 'Descrição para ser excluída',
+  done: false,
+);
